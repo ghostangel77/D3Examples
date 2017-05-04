@@ -1,0 +1,12 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "jQuery": "3.2.1",
+    "bootstrap": "3.3.7",
+    "d3": "4.8.0",
+    "d3-scale-chromatic": "1.1.0",
+    "topojson": "3.0.0",
+    "underscore": "1.8.3"
+  }
+}

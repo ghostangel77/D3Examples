@@ -1,0 +1,23 @@
+{
+  "version": "1.1.0",
+  "name": "d3-scale-chromatic",
+  "homepage": "https://github.com/saeidzebardast/d3-scale-chromatic",
+  "authors": [
+    "Mike Bostock"
+  ],
+  "description": "Sequential, diverging and categorical color scales derived from ColorBrewer.",
+  "main": "d3-scale-chromatic.js",
+  "keywords": [
+    "d3"
+  ],
+  "license": "BSD-3-Clause",
+  "_release": "1.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.0",
+    "commit": "309d084de9cf2c59b49719b95220a630e7e6ef42"
+  },
+  "_source": "https://github.com/saeidzebardast/d3-scale-chromatic.git",
+  "_target": "1.1.0",
+  "_originalSource": "d3-scale-chromatic"
+}
