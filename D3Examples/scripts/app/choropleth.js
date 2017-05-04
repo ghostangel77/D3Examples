@@ -1,19 +1,16 @@
 ﻿let choroplethMap = (function () {
-    let drawSlider = false;
-    var additionalInfo = {};
-    var min = 0;
-    var max = 0;
-    var svg = d3.select("svg");
-    var path = d3.geoPath();
-    var unemployment = d3.map();
-    var width = +svg.attr("width");
-    var height = +svg.attr("height");
+    let drawSlider = true;
+    let additionalInfo = {};
+    let min = 0;
+    let max = 0;
+    let svg = d3.select("svg");
+    let path = d3.geoPath();
+    let unemployment = d3.map();
+    let width = +svg.attr("width");
+    let height = +svg.attr("height");
+    let legendText;
 
-    var legendText;
-
-    function draw(options) {
-        drawSlider = options ? false : true;
-      
+    function draw() {
         d3.queue()
             .defer(d3.json, "../scripts/lib/us-10m.v1.json")
             .defer(d3.csv, "../data/Total TAT-ReportLevel.csv", function (d) {
@@ -29,8 +26,8 @@
                 unemployment.set(id, Math.floor(result));
 
                 additionalInfo[+id] = { result: d[resultProp], county: d[countyStateProp] };
-                min = options ? options.min : (min < result ? min : Math.floor(result));
-                max = options ? options.max : (max > result ? max : Math.ceil(result));
+                min = min < result ? min : Math.floor(result);
+                max = max > result ? max : Math.ceil(result);
             })
             .await(start);
     }
@@ -67,15 +64,26 @@
 
         fillMap(color, us);
         summaryBar.draw(summaryBarData, color, svg);
-        if (drawSlider)
-            $("#slider").slider({ range: true, min: range.min, max: range.max, values: [range.min, range.max] });
-
+        addSlider(error, us, range);
     }
 
+    function addSlider(error, us, range) {
+        if (drawSlider) {
+            $("#slider").slider({ range: true, min: range.min, max: range.max, values: [range.min, range.max] });
+            $("#slider").on("slidechange", function () {
+                let values = $("#slider").slider("values");
+                min = values[0];
+                max = values[1];
+                start(error, us);
+            });
+        }
+
+        drawSlider = false;
+    }
 
     function fillMap(color, us) {
         var notFound = [];
-
+        $('g.key').remove();
         svg.append("g")
             .attr("class", "counties")
             .selectAll("path")

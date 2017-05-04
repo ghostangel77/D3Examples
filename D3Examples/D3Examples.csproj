@@ -69,7 +69,6 @@
     <Content Include="bower.json" />
     <Content Include=".bowerrc" />
     <Content Include="data\unemployment.tsv" />
-    <Content Include="scripts\app\choropleth - Copy.js" />
     <Content Include="scripts\app\init.js" />
     <Content Include="scripts\app\summaryBar.js" />
     <Content Include="scripts\app\util.js" />
