@@ -70,6 +70,9 @@
     <Content Include=".bowerrc" />
     <Content Include="data\unemployment.tsv" />
     <Content Include="scripts\app\choropleth - Copy.js" />
+    <Content Include="scripts\app\init.js" />
+    <Content Include="scripts\app\summaryBar.js" />
+    <Content Include="scripts\app\util.js" />
     <Content Include="scripts\lib\us-10m.v1.json" />
     <Content Include="data\counties.json" />
     <Content Include="data\Total TAT-ReportLevel.csv" />
