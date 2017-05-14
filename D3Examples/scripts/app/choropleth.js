@@ -1,35 +1,59 @@
 ﻿let choroplethMap = (function () {
     let drawSlider = true;
-    let additionalInfo = {};
+    let additionalInfo = { keys: [], values: [] };
     let min = 0;
     let max = 0;
     let svg = d3.select("svg");
     let path = d3.geoPath();
-    let unemployment = d3.map();
+    let report = d3.map();
     let width = +svg.attr("width");
     let height = +svg.attr("height");
     let legendText;
 
     function draw() {
-        d3.queue()
-            .defer(d3.json, "../scripts/lib/us-10m.v1.json")
-            .defer(d3.csv, "../data/Total TAT-ReportLevel.csv", function (d) {
-                let keys = Object.keys(d);
-                legendText = keys[3];
-                let resultProp = keys[3];
-                let idProp = keys[0];
-                let countyStateProp = keys[2];
+        $.when(
+            $.getJSON("../data/reports.json")
+        ).then(function (info) {
+            //TODO: Validate d.results.keys.length >= 2
+            let keys = info.results.keys;
+            let idFieldName = keys[0];
+            let valueFieldName = keys[1];
+            legendText = valueFieldName;
 
-                let result = +(d[resultProp].replace(/\,/g, '')) || 0;
-                let id = zeroFill(d[idProp], 5);
+            additionalInfo.keys.push(idFieldName);
+            additionalInfo.keys.push(valueFieldName);
+            if (keys.length > 2) {
+                for (let i = 2; i < keys.length; i++) {
+                    additionalInfo.keys.push(keys[i]);
+                }
+            }
 
-                unemployment.set(id, Math.floor(result));
+            let data = info.results.data;
+            data.forEach(function (element) {
+                if (!element[0])
+                    return;
 
-                additionalInfo[+id] = { result: d[resultProp], county: d[countyStateProp] };
-                min = min < result ? min : Math.floor(result);
-                max = max > result ? max : Math.ceil(result);
-            })
-            .await(start);
+                let id = zeroFill(element[0], 5);
+                let value = element[1];
+                let numericValue = (typeof value === 'string' || value instanceof String) ? +(value.replace(/\,/g, '')) : value;
+
+                report.set(id, Math.floor(numericValue));
+
+                let currentItem = [id, value]
+                if (keys.length > 2) {
+                    for (let i = 2; i < keys.length; i++) {
+                        currentItem.push(element[i]);
+                    }
+                }
+                additionalInfo.values.push(currentItem);
+
+                min = min < value ? min : Math.floor(value);
+                max = max > value ? max : Math.ceil(value);
+            });
+            d3.queue()
+                .defer(d3.json, "../scripts/lib/us-10m.v1.json")
+                .await(start);
+        });
     }
 
     function start(error, us) {
@@ -90,14 +114,23 @@
             .data(topojson.feature(us, us.objects.counties).features)
             .enter()
             .append("path")
-            .attr("fill", function (d) { return color(d.rate = unemployment.get(d.id)); })
+            .attr("fill", function (d3Data) { return color(d3Data.rate = report.get(d3Data.id)); })
             //.attr("stroke", "#f00")
             .attr("d", path)
             .append("title")
-            .text(function (d) {
-                var info = additionalInfo[+d.id];
-                return "County: " + (info ? info.county : '') + "\r\n" +
-                    "Result: " + d.rate;// (info ? info.result : d.rate);
+            .text(function (d3Data) {
+                let keys = additionalInfo.keys;
+                var info = _.find(additionalInfo.values, function (arr) { return arr[0] === d3Data.id; });
+                if (!info)
+                    return '';
+
+                let tooltipText = '';
+                for (let i = 1; i < info.length; i++) {
+                    tooltipText += keys[i] + ': ' + (info[i] || '');
+                    if (i < info.length - 1)
+                        tooltipText += "\r\n";
+                }
+                return tooltipText;
             });
 
         svg.append("path")

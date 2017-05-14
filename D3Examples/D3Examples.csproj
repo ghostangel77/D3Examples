@@ -75,6 +75,8 @@
     <Content Include="scripts\lib\us-10m.v1.json" />
     <Content Include="data\counties.json" />
     <Content Include="data\Total TAT-ReportLevel.csv" />
+    <Content Include="data\TestC.csv" />
+    <Content Include="data\reports.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
