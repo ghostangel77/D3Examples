@@ -2,12 +2,11 @@
   "success": true,
   "error": null,
   "results": {
-    "keys": [ "FIPSCode", "Average TAT-RequestLevel(Days)", "County, State" ],
+    "keys": [ "FIPSCode", "Average TAT-RequestLevel(Days)", "County", "State" ],
     "data": [
-      [ "06071", 15690, "San Bernardino, CA" ],
-      [ "01097", 6071 ],
+      [ "06071", 15690, "San Bernardino", "CA" ],
+      [ "17093", 623, "Kendall", "IL" ],
       [ "06037", 50964 ],
-      [ "17093", 623 ],
       [ "32007", 191 ],
       [ "06111", 3806 ],
       [ "17031", 45828 ],
